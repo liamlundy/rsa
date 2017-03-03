@@ -1,6 +1,7 @@
-from numpy.core.test_rational import lcm
-from math import gcd, log, ceil
+from _codecs import encode, decode
+from math import gcd
 
+from utils.codecs import encode_message, decode_message
 from utils.modular_arithmatic import mod_inv
 from utils.rabin_miller import choose_prime
 
@@ -23,66 +24,61 @@ def get_keys():
     return e, d, n
 
 
-def encrypt_block(message, key, n):
-    # need to turn into ascii if letters
-    # for now assume its a number
-    assert message < n
-    assert gcd(message, n) == 1
-    return pow(message, key, n)
+def encrypt_chunk(plain_text, key, n):
+    # must be hex message
+    # error check this -  try/catch
+    assert plain_text < n
+    assert gcd(plain_text, n) == 1
+    return pow(plain_text, key, n)
 
 
-def encrypt_message(message, key, n):
+def decrypt_chunk(cipher_text, key, n):
+    return pow(cipher_text, key, n)
+
+
+def encrypt(plain_bytes, key, n, chunk_size=8):
+    """
+    Takes a byte string and encrypts it in chunks of bytes of length 'chunk_size' with key 'key' and modulus 'n'.
+    :param plain_bytes: hexadecimal bytes to be encrypted
+    :type plain_bytes: bytes
+    :param key: key to be used for encryption
+    :type key: int
+    :param n: modulus to be sued for encryption
+    :type n: int
+    :param chunk_size: number of bytes to be encrypted at one time
+    :type chunk_size: int
+    :return: ??????
+    :rtype:
+    """
     # TODO: Padding
-    # TODO: Block size
-    ciphertext = []
-    # arbitrary block size of 8 that is relatively small
-    for i in range(0, len(message), 8):
-        ciphertext.append(encrypt_block(encode_block(message[i: min(i + 8, len(message))]), key, n))
-    return ciphertext
+    encrypted = []
+    for i in range(0, len(plain_bytes), chunk_size):
+        chunk = int(encode(plain_bytes[i: i + 8], 'hex'), 16)
+        encrypted.append(encrypt_chunk(chunk, key, n))
+    return encrypted
 
 
-def encode_block(text):
-    # TODO: Handle unicode chars > 2 bytes
-    result = 0
-    shift = 8*(len(text) - 1)
-    for letter in text:
-        result += (ord(letter) << shift)
-        shift -= 8
-    return result
+def decrypt(plain_text_array, key, n):
+    decrypted = b''
+    for chunk in plain_text_array:
+        decrypted_chunk = decrypt_chunk(chunk, key, n)
+        hex_string = format(decrypted_chunk, 'x')
+        if (len(hex_string) % 2) != 0:
+            hex_string = '0' + hex_string
+        decrypted += decode(hex_string, 'hex')
+    return decrypted
 
 
-def decode_block(encoded):
-    length = int(ceil(log(encoded, 16**2)))
+if __name__ == "__main__":
+    en = encode_message('''i am a fucking test
+    نقاب
+a''')
+    print(en)
 
-    result = []
-    shift = 8*(length - 1)
-    for i in range(0, length):
-        letter = (encoded >> shift)
-        result.append(chr(letter))
-        encoded = (encoded - (letter << shift))
-        shift -= 8
-    return ''.join(result)
+    priv, pub, modulus = get_keys()
+    ciph = encrypt(en, pub, modulus)
+    print(ciph)
 
-
-def decrypt(ciphertext, key, n):
-    plaintext = []
-    for block in ciphertext:
-        plaintext.append(decode_block(pow(block, key, n)))
-    return ''.join(plaintext)
-
-private, public, modulus = get_keys()
-print("e: {}, \nd: {}, \nn: {}".format(private, public, modulus))
-
-plain = """$$$$test
-
-ꪪ
-
-$%^
-i am a test
-woot"""
-
-print("message: {}".format(plain))
-ciph = encrypt_message(plain, public, modulus)
-print("encrypt: {}".format(ciph))
-plain = decrypt(ciph, private, modulus)
-print("decrypt: {}".format(plain))
+    plain = decrypt(ciph, priv, modulus)
+    print(plain)
+    print(decode_message(plain))
