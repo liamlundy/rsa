@@ -1,7 +1,9 @@
-from _codecs import encode, decode
+import hashlib
+import json
+from codecs import encode, decode
 from math import gcd
 
-from utils.codecs import encode_message, decode_message
+from utils.codecs import bytes_to_int, int_to_bytes
 from utils.modular_arithmatic import mod_inv
 from utils.rabin_miller import choose_prime
 
@@ -47,38 +49,52 @@ def encrypt(plain_bytes, key, n, chunk_size=8):
     :type n: int
     :param chunk_size: number of bytes to be encrypted at one time
     :type chunk_size: int
-    :return: ??????
-    :rtype:
+    :return: a byte string of the encrypted input
+    :rtype: bytes
     """
     # TODO: Padding
     encrypted = []
     for i in range(0, len(plain_bytes), chunk_size):
-        chunk = int(encode(plain_bytes[i: i + 8], 'hex'), 16)
-        encrypted.append(encrypt_chunk(chunk, key, n))
+        chunk = bytes_to_int(plain_bytes[i: i + chunk_size])
+        encrypted.append(int_to_bytes(encrypt_chunk(chunk, key, n)))
     return encrypted
 
 
 def decrypt(plain_text_array, key, n):
     decrypted = b''
     for chunk in plain_text_array:
-        decrypted_chunk = decrypt_chunk(chunk, key, n)
-        hex_string = format(decrypted_chunk, 'x')
-        if (len(hex_string) % 2) != 0:
-            hex_string = '0' + hex_string
-        decrypted += decode(hex_string, 'hex')
+        decrypted_chunk = decrypt_chunk(bytes_to_int(chunk), key, n)
+        decrypted += int_to_bytes(decrypted_chunk)
     return decrypted
 
 
+# need sto be fixed. cant append bytes to list
+def sign_message(message, key, n):
+    hashed_message = hashlib.md5(message).digest()
+    signature = encrypt(hashed_message, key, n)
+    return message + signature
+
+
 if __name__ == "__main__":
-    en = encode_message('''i am a fucking test
-    نقاب
-a''')
+    vote = {
+        "vote": "no"
+    }
+
+    test = json.dumps(vote)
+
+    byte_string = b'abcdefg123456789abcdefg123456789abcdefg123456789abcdefg123456789'
+    pub1, priv1, mod1 = get_keys()
+    pub2, priv2, mod2 = get_keys()
+
+    # sign_message(message=b'abcdefgh12345678', key=priv1, n=mod1)
+
+    # ok, here's the issue. we need it to be a byte string. so yeah
+    # sign
+
+    # maybe sign the hash??? and append to message
+    en = encrypt(encode(test), pub1, mod1, 20)
     print(en)
+    print(decode(decrypt(en, priv1, mod1)))
 
-    priv, pub, modulus = get_keys()
-    ciph = encrypt(en, pub, modulus)
-    print(ciph)
+    # encrypted = encrypt(signed, pub2, mod2)
 
-    plain = decrypt(ciph, priv, modulus)
-    print(plain)
-    print(decode_message(plain))

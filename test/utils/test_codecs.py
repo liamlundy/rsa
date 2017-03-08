@@ -1,4 +1,4 @@
-from utils.codecs import encode_message, decode_message
+from utils.codecs import encode_message, decode_message, int_to_bytes, bytes_to_int
 
 
 def test_encode_message_english():
@@ -41,3 +41,12 @@ def test_really_long():
     """
     encoded = encode_message(test_string)
     assert decode_message(encoded) == test_string
+
+
+def test_int_to_bytes():
+    # TODO: make a better test
+    assert int_to_bytes(1234) == b'\x04\xd2'
+
+
+def test_bytes_to_int():
+    assert bytes_to_int(b'\x04\xd2') == 1234
