@@ -1,7 +1,16 @@
+# ide
 .idea
-__pycache__
-.cache
+
+# jupyter and ipython
 .ipynb_checkpoints
 *.ipynb
-*.c
-*.pyx
+
+# general things to ignore
+build/
+dist/
+*.egg-info/
+*.egg
+*.py[cod]
+__pycache__/
+*.so
+*~

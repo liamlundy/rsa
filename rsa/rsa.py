@@ -1,6 +1,4 @@
 import hashlib
-import json
-from codecs import encode, decode
 from math import gcd
 
 from utils.codecs import bytes_to_int, int_to_bytes
@@ -73,28 +71,4 @@ def sign_message(message, key, n):
     hashed_message = hashlib.md5(message).digest()
     signature = encrypt(hashed_message, key, n)
     return message + signature
-
-
-if __name__ == "__main__":
-    vote = {
-        "vote": "no"
-    }
-
-    test = json.dumps(vote)
-
-    byte_string = b'abcdefg123456789abcdefg123456789abcdefg123456789abcdefg123456789'
-    pub1, priv1, mod1 = get_keys()
-    pub2, priv2, mod2 = get_keys()
-
-    # sign_message(message=b'abcdefgh12345678', key=priv1, n=mod1)
-
-    # ok, here's the issue. we need it to be a byte string. so yeah
-    # sign
-
-    # maybe sign the hash??? and append to message
-    en = encrypt(encode(test), pub1, mod1, 20)
-    print(en)
-    print(decode(decrypt(en, priv1, mod1)))
-
-    # encrypted = encrypt(signed, pub2, mod2)
 
