@@ -52,8 +52,8 @@ def rabin_miller(n, a):
 
 
 # 512 bits each
-def choose_prime():
-    n = random.randint(2**511, 2**512)
+def choose_prime(min_value=2 ** 511, max_value=2 ** 512):
+    n = random.randint(min_value, max_value)
     if n % 2 == 0:
         n += 1
     while not is_prime(n):
