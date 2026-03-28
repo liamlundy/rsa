@@ -1,25 +1,25 @@
 import hashlib
 from math import gcd
 
-from utils.codecs import bytes_to_int, int_to_bytes
-from utils.modular_arithmatic import mod_inv
-from utils.rabin_miller import choose_prime
+from .utils.codecs import bytes_to_int, int_to_bytes
+from .utils.modular_arithmatic import mod_inv
+from .utils.rabin_miller import choose_prime
 
 
 def get_keys():
     p = choose_prime()
     q = choose_prime()
-    n = p*q
+    n = p * q
 
     # should be using carmichael?
-    totient = (p-1)*(q-1)
+    totient = (p - 1) * (q - 1)
     # totient = lcm((p - 1), (q - 1))
 
     e = 65537
 
     d = mod_inv(e, totient)
 
-    assert (d*e) % totient == 1
+    assert (d * e) % totient == 1
 
     return e, d, n
 
@@ -53,13 +53,13 @@ def encrypt(plain_bytes, key, n, chunk_size=8):
     # TODO: Padding
     encrypted = []
     for i in range(0, len(plain_bytes), chunk_size):
-        chunk = bytes_to_int(plain_bytes[i: i + chunk_size])
+        chunk = bytes_to_int(plain_bytes[i : i + chunk_size])
         encrypted.append(int_to_bytes(encrypt_chunk(chunk, key, n)))
     return encrypted
 
 
 def decrypt(plain_text_array, key, n):
-    decrypted = b''
+    decrypted = b""
     for chunk in plain_text_array:
         decrypted_chunk = decrypt_chunk(bytes_to_int(chunk), key, n)
         decrypted += int_to_bytes(decrypted_chunk)
@@ -71,4 +71,3 @@ def sign_message(message, key, n):
     hashed_message = hashlib.md5(message).digest()
     signature = encrypt(hashed_message, key, n)
     return message + signature
-

@@ -1,4 +1,4 @@
-from utils.rabin_miller import is_prime
+from rsa.utils.rabin_miller import is_prime
 
 
 def test_is_prime():

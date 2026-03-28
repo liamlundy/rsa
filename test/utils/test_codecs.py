@@ -1,4 +1,4 @@
-from utils.codecs import encode_message, decode_message, int_to_bytes, bytes_to_int
+from rsa.utils.codecs import encode_message, decode_message, int_to_bytes, bytes_to_int
 
 
 def test_encode_message_english():

@@ -1,4 +1,4 @@
-from rsa.rsa import *
+from rsa.rsa import get_keys, encrypt, decrypt
 
 
 def test_encrypt_decrypt():
