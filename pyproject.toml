@@ -8,13 +8,24 @@ authors = [
 readme = "README.md"
 license= "MIT"
 requires-python = ">=3.14.3"
-dependencies = []
+dependencies = [
+    "click>=8.3.1",
+]
 
 [dependency-groups]
 dev = [
     "pytest>=9.0.2",
+    "pytest-cov>=7.1.0",
     "ruff>=0.15.8",
 ]
+
+[project.scripts]
+rsa-cli = "rsa.console:cli"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "C90", "B", "I"]
+# Ignore line length rules in test directory
+per-file-ignores = { "test/*" = ["E501"] }
 
 [build-system]
 requires = ["uv_build>=0.11.2,<0.12"]

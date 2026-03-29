@@ -1,34 +1,23 @@
-from codecs import decode, encode
-
-
-def encode_message(plain):
+def int_to_bytes(value: int) -> bytes:
     """
-    utf-8 --> bytes
-    Assumes its utf-8
-    return an array of ints
+    Convert an integer to a byte array.
+
+    Args:
+        value (int): The input integer.
+    Returns:
+        bytes: The resulting byte array.
     """
+    length = (value.bit_length() + 7) // 8  # calculate byte length
+    return value.to_bytes(length, byteorder="big")
 
-    return bytes(plain, 'utf-8')
 
-
-def decode_message(encoded):
+def bytes_to_int(byte_string: bytes) -> int:
     """
-    bytes --> utf-8
-    Takes an array of bytes
-    return utf-8 text
+    Convert a byte array to an integer.
+
+    Args:
+        byte_string (bytes): The input byte array.
+    Returns:
+        int: The resulting integer.
     """
-    hex_message = format(int(encode(encoded, 'hex'), 16), 'x')
-    if (len(hex_message) % 2) != 0:
-        hex_message = '0' + hex_message
-    return decode(hex_message, 'hex').decode('utf-8')
-
-
-def int_to_bytes(integer):
-    temp_bytes = format(integer, 'x')
-    if (len(temp_bytes) % 2) != 0:
-        temp_bytes = '0' + temp_bytes
-    return decode(temp_bytes, 'hex')
-
-
-def bytes_to_int(byte_string):
-    return int(encode(byte_string, 'hex'), 16)
+    return int.from_bytes(byte_string, byteorder="big")
