@@ -1,12 +1,7 @@
 import click
 
-from .rsa import (
-    decrypt_bytes,
-    encrypt_bytes,
-)
-from .rsa import (
-    generate_keys as gen_keys,
-)
+from .rsa import decrypt_bytes, encrypt_bytes
+from .rsa import generate_keys as gen_keys
 
 CHUNK_SIZE = 64
 
