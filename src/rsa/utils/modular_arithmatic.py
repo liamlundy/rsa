@@ -1,15 +1,18 @@
 from math import gcd
 
 
-def mod_inv(a, m):
+def mod_inv(a: int, m: int) -> int:
     """
     Returns the modular inverse of a number.
-    :param a: The input number.
-    :param m: The number to mod  by.
-    :return: The inverse of (a mod m).
+
+    Args:
+        a (int): The input number.
+        m (int): The number to mod by.
+    Returns:
+        int: The inverse of (a mod m).
     """
     if gcd(a, m) != 1:
-        raise ValueError("No mod inverse for {} (mod {})".format(a, m))
+        raise ValueError(f"No mod inverse for {a} (mod {m})")
         # no mod inverse if a & m aren't relatively prime
 
     # Calculate using the Extended Euclidean Algorithm:

@@ -1,5 +1,6 @@
 # ide
 .idea
+.vscode
 
 # jupyter and ipython
 .ipynb_checkpoints
@@ -14,3 +15,4 @@ dist/
 __pycache__/
 *.so
 *~
+.coverage
