@@ -27,6 +27,9 @@ select = ["E", "F", "W", "C90", "B", "I"]
 # Ignore line length rules in test directory
 per-file-ignores = { "test/*" = ["E501"] }
 
+[tool.uv.build-backend]
+module-root = "src-python"
+
 [build-system]
 requires = ["uv_build>=0.11.2,<0.12"]
 build-backend = "uv_build"

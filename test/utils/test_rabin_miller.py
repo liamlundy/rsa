@@ -1,5 +1,4 @@
 import pytest
-
 from rsa.utils.rabin_miller import choose_prime, get_random_odd_number, is_prime
 
 
