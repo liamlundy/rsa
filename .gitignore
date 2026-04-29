@@ -16,3 +16,6 @@ __pycache__/
 *.so
 *~
 .coverage
+
+# rust
+/target

@@ -73,10 +73,10 @@ def decrypt_value(cipher_text: int, key: int, n: int) -> int:
     return pow(cipher_text, key, n)
 
 
-def encrypt_chunk(chunk: bytes, key: int, n: int) -> bytes:
+def encrypt_chunk(chunk: bytes, key: int, n: int, chunk_size: int) -> bytes:
     value = bytes_to_int(chunk)
     encrypted_value = encrypt_value(value, key, n)
-    return int_to_bytes(encrypted_value)
+    return int_to_bytes(encrypted_value).rjust(chunk_size, b"\x00")
 
 
 def decrypt_chunk(chunk: bytes, key: int, n: int) -> bytes:
@@ -107,7 +107,7 @@ def encrypt_bytes(
     encrypted = b""
     for i in range(0, len(plain_bytes), chunk_size):
         chunk = plain_bytes[i : i + chunk_size]
-        encrypted_chunk = encrypt_chunk(chunk, key, n)
+        encrypted_chunk = encrypt_chunk(chunk, key, n, chunk_size)
         encrypted += encrypted_chunk
     return encrypted
 

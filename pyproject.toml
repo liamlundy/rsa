@@ -15,12 +15,17 @@ dependencies = [
 [dependency-groups]
 dev = [
     "pytest>=9.0.2",
+    "pytest-benchmark>=5.1.0",
     "pytest-cov>=7.1.0",
     "ruff>=0.15.8",
 ]
 
 [project.scripts]
 rsa-cli = "rsa.console:cli"
+
+[tool.pytest.ini_options]
+testpaths = ["test"]
+python_files = ["test_*.py", "bench_*.py"]
 
 [tool.ruff.lint]
 select = ["E", "F", "W", "C90", "B", "I"]
